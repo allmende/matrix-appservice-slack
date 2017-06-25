@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  slack-appservice:
+    build: .
+    command: ["node", "app.js", "-c", "config.yaml", "-p", "9899"]
+    environment:
+      VIRTUAL_HOST: 'slack.appservice.okfn-de-test.matrix'
+      VIRTUAL_PORT: '9898'
+      LETSENCRYPT_HOST: 'slack.appservice.okfn-de-test.matrix'
+      LETSENCRYPT_EMAIL: 'almereyda@allmende.io'
+    expose:
+      - "9898"
+      - "9899"
+    volumes:
+      - ./config.yaml:/usr/src/app/config.yaml
+      - /srv/okfn-de-test/data/slack-registration.yaml:/usr/src/app/slack-registration.yaml
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+    external:
+      name: nginx_default
+  backend:
+    external:
+      name: okfndetest_backend
